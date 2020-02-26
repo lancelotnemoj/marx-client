@@ -8,19 +8,14 @@
 
     <div class="layout pc-layout">
       <Header />
-      <hr
-        class="divider pc-divider"
-        style="height: 1px; width: calc(100% - 40px)"
-      />
+      <hr class="divider pc-divider" style="height: 1px; width: calc(100% - 40px)" />
 
       <a-layout-content style="padding: 0 24px;flex-grow:2" class="content">
-        <BreadCrumb />
+        <!-- <BreadCrumb /> -->
         <router-view />
       </a-layout-content>
 
-      <a-layout-footer style="text-align: center"
-        >{{ this.$root.$data.user }}Marx ©2019 Created by Zato</a-layout-footer
-      >
+      <a-layout-footer style="text-align: center">Marx ©2019 Created by Zato</a-layout-footer>
     </div>
   </a-layout>
 </template>

@@ -1,14 +1,14 @@
 <template>
   <div class="singleMulti">
-    <div class="title">{{title}}</div>
-    <p style="font-size: 14px;">{{detail}}</p>
+    <h3>{{title}}</h3>
+
     <div class="line">
-      <a-switch :style="inline" @change="onChange">
+      <a-switch :style="inline" @change="onChange" :checked="answer">
         <a-icon type="check" slot="checkedChildren" />
         <a-icon type="close" slot="unCheckedChildren" />
       </a-switch>
 
-      <label>上述描述是：{{value ? "正确" : "错误"}}的</label>
+      <div>上述描述是：{{answer ? "正确" : "错误"}}的</div>
     </div>
   </div>
 </template>
@@ -18,13 +18,20 @@ import { Switch, Icon } from "ant-design-vue";
 
 export default {
   name: "TrueFalse",
+  created() {
+    console.log(this.$props);
+  },
   props: {
-    title: String,
-    detail: String
+    answer: Boolean,
+    title: String
+    // value: {
+    //   type: Boolean,
+    //   default: true
+    // }
   },
   data() {
     return {
-      value: true,
+      // value: true,
       inline: {
         display: "inline"
       }
@@ -36,8 +43,8 @@ export default {
   },
   methods: {
     onChange: function(v) {
-      this.value = v;
-      this.$emit("update", this.value);
+      // this.value = v;
+      this.$emit("update", v);
     }
   },
   model: {

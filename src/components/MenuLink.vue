@@ -1,9 +1,6 @@
 <template>
   <router-link :to="to" class="link">
-    <a-card
-      hoverable
-      style="width: 100%; border-radius: 16px; overflow: hidden"
-    >
+    <a-card hoverable style="width: 100%; border-radius: 16px; overflow: hidden">
       <div slot="cover" class="cover">
         <img alt="cover" :src="src" />
       </div>
@@ -17,7 +14,7 @@ export default {
   name: "MenuLink",
   props: {
     title: String,
-    to: String,
+    to: [String, Object],
     src: String
   }
 };

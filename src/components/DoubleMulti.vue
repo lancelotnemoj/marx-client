@@ -1,11 +1,11 @@
 <template>
   <div class="singleMulti">
-    <div class="title">{{title}}</div>
+    <h3>{{title}}</h3>
     <a-checkbox-group v-model="value">
-      <div v-for="opt in choices" v-bind:key="opt.tag">
+      <div v-for="(opt, index) in Object.keys(choices)" v-bind:key="index">
         <div>
-          <a-checkbox :value="opt.tag">
-            <span class="content">{{opt.content}}</span>
+          <a-checkbox :value="opt">
+            <span class="content">{{opt}}: {{choices[opt]}}</span>
           </a-checkbox>
         </div>
       </div>
@@ -20,8 +20,11 @@ export default {
   name: "DoubleMulti",
   props: {
     title: String,
-    choices: Array,
-    answer: Array
+    choices: Object,
+    answer: {
+      type: Array,
+      default: []
+    }
   },
   data() {
     return {
@@ -36,6 +39,9 @@ export default {
   model: {
     prop: "answer", //绑定的值，通过父组件传递
     event: "update" //自定义时间名
+  },
+  created() {
+    this.value = this.answer;
   },
   watch: {
     value: function(newQuestion, oldQuestion) {

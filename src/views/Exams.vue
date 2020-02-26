@@ -1,34 +1,70 @@
 <template>
   <div style="width: 100%">
-    <a-tabs defaultActiveKey="1" tabPosition="left">
+    <a-tabs defaultActiveKey="1" tabPosition="top">
       <a-tab-pane tab="随堂测验" key="1">
         <ExamList :exams="inclass" />
       </a-tab-pane>
       <a-tab-pane tab="考试" key="2">
         <ExamList :exams="exams" />
       </a-tab-pane>
+      <a-tab-pane tab="历史记录" key="3">
+        <HistoryList :exams="history" />
+      </a-tab-pane>
     </a-tabs>
   </div>
 </template>
 <script>
 import ExamList from "@/components/ExamList.vue";
-
+import HistoryList from "@/components/HistoryList.vue";
+import arrayDivider from "@/lib/arrayDivider";
+import { GET } from "@/lib/fetch";
 export default {
   components: {
-    ExamList
+    ExamList,
+    HistoryList
+  },
+  created() {
+    this.init();
+    // if (this.isPC()) {
+    //   this.tabPosition = "top";
+    // }
+  },
+  computed: {
+    isPC: function() {
+      const mql = window.matchMedia("(max-width: 768px)");
+      return mql.matches || false;
+    }
   },
   data() {
     return {
-      inclass: [
-        { id: 1, name: "第一章随堂考试" },
-        { id: 2, name: "第二章随堂考试" }
-      ],
-      exams: [{ id: 1, name: "半期考试" }, { id: 2, name: "期末考试" }]
+      inclass: [],
+      exams: [],
+      history: [],
+      tabPosition: "left"
     };
   },
   methods: {
     callback(val) {
       console.log(val);
+    },
+
+    async init() {
+      const { data } = await GET("/client/exams", {
+        id: "f46f6080-549d-11ea-b26b-a1c8bfea84be"
+      });
+      const now = new Date().getTime();
+      const { success: finished, failure: todo } = arrayDivider(
+        data,
+        element => {
+          console.log(element.endAt, element.endAt - now < 0, element.name);
+          return element.endAt - now < 0;
+        }
+      );
+      console.log(finished.length, todo.length);
+      const { success, failure } = arrayDivider(todo, element => element.usage);
+      this.history = finished;
+      this.inclass = failure;
+      this.exams = success;
     }
   }
 };

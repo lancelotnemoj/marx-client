@@ -15,10 +15,25 @@
           src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
         />
       </a-col>-->
-      <a-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8" :span="20" class="card">
+      <a-col
+        v-for="item in courses"
+        :key="item.id"
+        :xs="24"
+        :sm="24"
+        :md="12"
+        :lg="8"
+        :xl="8"
+        :span="20"
+        class="card"
+      >
         <menu-link
-          title="个人信息维护"
-          to="/info"
+          :title="item.name"
+          :to="{
+            path: '/exams',
+            query: {
+              id: item.id
+            }
+          }"
           src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
         />
       </a-col>
@@ -28,15 +43,41 @@
 
 <script>
 import MenuLink from "@/components/MenuLink.vue";
+import { GET } from "@/lib/fetch";
 export default {
   name: "home",
   components: {
     MenuLink
   },
   data() {
-    return {};
+    return {
+      courses: []
+    };
   },
-  created() {}
+  created() {},
+  methods: {
+    init: function() {
+      GET("/client/courses").then(res => {
+        this.courses = res.data;
+      });
+    }
+  },
+  computed: {
+    user: function() {
+      return this.$root.user;
+    }
+  },
+  watch: {
+    user: {
+      handler: function(newValue, oldValue) {
+        if (newValue && Object.keys(newValue).length > 0) {
+          console.log("here");
+          this.init();
+        }
+      },
+      immediate: true
+    }
+  }
 };
 </script>
 

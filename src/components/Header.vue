@@ -1,9 +1,6 @@
 <template>
   <div>
-    <div
-      class="header"
-      style="background: transparent; height: auto; padding: 6px 18px 0 18px"
-    >
+    <div class="header" style="background: transparent; height: auto; padding: 6px 18px 0 18px">
       <p
         style="padding: 0; margin: 0; cursor: pointer;"
         @click="goBack"
@@ -21,11 +18,17 @@
       class="header"
       style="background: transparent; height: auto; padding: 0px 18px 12px 18px"
     >
-      <h1 class="title" style="padding: 0; margin: 0">Marx 考试系统</h1>
+      <router-link to="/">
+        <h1 class="title" style="padding: 0; margin: 0">Marx 考试系统</h1>
+      </router-link>
 
-      <a-avatar size="large" @click="goUserInfo" style="cursor: pointer">{{
-        $root.user.name ? $root.user.name[0] : "U"
-      }}</a-avatar>
+      <router-link to="/info">
+        <a-avatar size="large" @click="goUserInfo" style="cursor: pointer">
+          {{
+          $root.user.name ? $root.user.name[0] : "U"
+          }}
+        </a-avatar>
+      </router-link>
     </a-layout-header>
   </div>
 </template>

@@ -1,10 +1,10 @@
 <template>
   <div class="singleMulti">
-    <div class="title">{{title}}</div>
+    <h3>{{title}}</h3>
     <a-radio-group @change="onChange" v-model="value" size="large">
-      <div v-for="opt in choices" v-bind:key="opt.tag">
-        <a-radio :value="opt.tag" class="radio">
-          <span class="content">{{opt.content}}</span>
+      <div v-for="(opt, index) in Object.keys(choices)" v-bind:key="index">
+        <a-radio :value="opt" class="radio">
+          <span class="content">{{opt}}: {{choices[opt]}}</span>
         </a-radio>
       </div>
     </a-radio-group>
@@ -18,7 +18,11 @@ export default {
   name: "SingleMulti",
   props: {
     title: String,
-    choices: Array
+    choices: Object,
+    answer: {
+      type: String,
+      default: ""
+    }
   },
   data() {
     return {
@@ -28,6 +32,9 @@ export default {
   components: {
     aRadio: Radio,
     aRadioGroup: Radio.Group
+  },
+  created() {
+    this.value = this.answer;
   },
   methods: {
     onChange: function() {
