@@ -94,7 +94,7 @@ export default {
       });
       this.paper = raw;
       this.exam = exam;
-      console.log(raw);
+      // console.log(raw);
     }
   }
 };

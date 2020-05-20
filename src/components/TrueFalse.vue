@@ -19,7 +19,7 @@ import { Switch, Icon } from "ant-design-vue";
 export default {
   name: "TrueFalse",
   created() {
-    console.log(this.$props);
+    // console.log(this.$props);
   },
   props: {
     answer: Boolean,

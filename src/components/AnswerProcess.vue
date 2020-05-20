@@ -6,7 +6,7 @@
       <a-progress
         :percent="item.progress"
         size="small"
-        :status="item.progress === 100 ? 'success' : item.progress < 40 ? 'exception' : 'active'"
+        :status="item.progress === 100 ? '完成' : `${Number(item.progress).toFixed(2)}%` < 40 ? 'exception' : 'active'"
       />
     </div>
   </div>

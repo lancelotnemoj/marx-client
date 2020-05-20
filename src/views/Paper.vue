@@ -58,7 +58,7 @@ export default {
   },
   computed: {
     status: function() {
-      console.log("here", Object.values(this.paper.multi), this.paper.multi);
+      // console.log("here", Object.values(this.paper.multi), this.paper.multi);
       return [
         {
           name: "单项选择题",
@@ -138,13 +138,13 @@ export default {
     }
   },
   created() {
-    console.log(this.$route.query);
+    // console.log(this.$route.query);
     // 打散逻辑
     setTimeout(() => {
       GET("/client/paper", {
         id: this.$route.query.id
       }).then(res => {
-        console.log(res.current);
+        // console.log(res.current);
         this.single = res.paper.single || [];
         this.multi = res.paper.multi || [];
         this.trueFalse = res.paper.trueFalse || [];

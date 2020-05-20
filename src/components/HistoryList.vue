@@ -29,7 +29,7 @@ export default {
   methods: {
     handleClick(exam) {
       // if (exam.usage === false) return;
-      console.log(new Date(exam.endAt));
+      // console.log(new Date(exam.endAt));
       if ((exam.endAt || Date.now()) < Date.now()) {
         notification.warn({
           message: "考试尚未结束，再逛逛吧"
