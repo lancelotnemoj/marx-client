@@ -1,6 +1,6 @@
 <template>
   <div class="singleMulti">
-    <div class="title">{{title}}</div>
+    <h3>{{title}}</h3>
     <p style="font-size: 14px;">{{detail}}</p>
 
     <p class="select">你的判断：{{select ? "正确" : "错误"}}</p>

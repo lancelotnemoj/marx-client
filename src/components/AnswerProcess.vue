@@ -28,7 +28,7 @@ export default {
   padding-top: 12px;
   width: 100%;
   background: rgba(255, 255, 255);
-  /* z-index: 9999; */
+  z-index: 9999;
 }
 @media (min-width: 1200px) {
   .progress {

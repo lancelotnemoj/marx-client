@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const foo = async (suffix = "") => {
+        console.log(suffix, "b");
+      };
+      const a = async () => {
+        console.log("[A]", "a");
+        foo("[A]");
+        console.log("[A]", "c");
+      };
+      const c = async () => {
+        console.log("[C]", "a");
+        await foo("[C]");
+        console.log("[C]", "c");
+      };
+      setTimeout(() => {
+        a();
+      }, 500);
+
+      setTimeout(() => {
+        c();
+      }, 1000);
+    </script>
+  </body>
+</html>

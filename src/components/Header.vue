@@ -1,8 +1,10 @@
 <template>
   <div>
-    <div class="header" style="background: transparent; height: auto; padding: 6px 18px 0 18px">
+    <div class="header" style="background: transparent; height: auto; padding: 0 0px 0 0px">
+      <!-- <a-affix :offsetTop="0" style="width: 100%"> -->
       <p
-        style="padding: 0; margin: 0; cursor: pointer;"
+        class="frost"
+        style="padding: 6px; margin: 0; cursor: pointer;"
         @click="goBack"
         v-if="
           $route.matched instanceof Array &&
@@ -13,6 +15,7 @@
         <a-icon type="caret-left" theme="filled" />返回上一步
       </p>
       <p style="padding: 0; margin: 0;height: 18px" v-else></p>
+      <!-- </a-affix> -->
     </div>
     <a-layout-header
       class="header"
@@ -59,6 +62,7 @@ export default {
   padding: 0;
   color: #443535;
   display: flex;
+  width: 100%;
   flex-direction: row;
   /* justify-content: flex-start; */
   justify-content: space-between;
@@ -73,5 +77,33 @@ export default {
   height: 100%;
   margin: 0;
   position: relative;
+}
+
+.frost {
+  position: relative;
+  position: sticky;
+  overflow: hidden;
+  width: 100%;
+}
+.frost::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: inherit;
+  background-attachment: fixed;
+}
+.frost::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  filter: blur(16px);
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.25);
 }
 </style>

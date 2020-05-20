@@ -22,8 +22,8 @@ export default {
     title: String,
     choices: Object,
     answer: {
-      type: Array,
-      default: []
+      type: [Array, Object],
+      default: undefined
     }
   },
   data() {
@@ -45,7 +45,7 @@ export default {
   },
   watch: {
     value: function(newQuestion, oldQuestion) {
-      if (newQuestion.length >= 3) {
+      if (newQuestion && newQuestion.length >= 3) {
         this.value = oldQuestion.slice(0, 2);
         message.warning("多选题只有两个正确答案");
       }

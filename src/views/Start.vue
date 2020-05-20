@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <a-row :gutter="40" type="flex">
+    <a-row :gutter="40" type="flex" v-if="courses.length > 0">
       <!-- <a-col :xs="24" :sm="8" :md="8" :lg="8" :xl="8" :span="20" class="card">
         <menu-link
           title="测验与考试"
@@ -38,6 +38,12 @@
         />
       </a-col>
     </a-row>
+    <a-empty
+      v-else
+      style="flex: 2;align-items: center;
+    justify-content: center;
+    display: flex;"
+    />
   </div>
 </template>
 

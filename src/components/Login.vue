@@ -8,11 +8,7 @@
     @cancel="handleCancel"
   >
     <h1 style="text-align: center">用户登录</h1>
-    <customized-form
-      :password="fields.password"
-      :id="fields.id"
-      @change="handleFormChange"
-    />
+    <customized-form :password="fields.password" :id="fields.id" @change="handleFormChange" />
   </a-modal>
 </template>
 
@@ -100,6 +96,15 @@ export default {
         password: this.fields.password.value
       }).then(res => {
         if (res.success) {
+          console.log(res.data);
+          let privilege = JSON.parse(res.data.privilege);
+          if (privilege.indexOf("student") < 0) {
+            notification.error({
+              message: "登录失败，请确认登录了学生账号",
+              duration: 2
+            });
+            return;
+          }
           this.$root.user = res.data;
           notification.success({
             message: "登录成功",

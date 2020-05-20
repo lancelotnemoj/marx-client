@@ -1,62 +1,69 @@
 <template>
-  <div>
-    <a-row type="flex" justify="center" align="top">
-      <a-col :xs="24" :sm="20" :md="16" :lg="8" :xl="8">
-        <a-row>
-          <a-col :span="8">
-            <a-avatar :size="64" icon="user" />
-          </a-col>
-          <a-col :span="16" type="flex" justify="center">
-            <a-row>
-              <h1>UserName</h1>
-            </a-row>
-            <a-row>
-              <section>xxx专业-xxx班</section>
-            </a-row>
-          </a-col>
-        </a-row>
-      </a-col>
-    </a-row>
+  <div class="userinfo">
+    <h1>用户操作</h1>
+    <h2>当前用户: {{ this.user.name }}</h2>
 
-    <a-row type="flex" justify="center" align="top" style="margin-top: 48px">
-      <a-col :xs="24" :sm="20" :md="16" :lg="8" :xl="8" type="flex" align="left">
+    <a-divider />
+    <a-row>
+      <a-col type="flex" align="left" style="width: 100%">
         <h2>重置密码</h2>
         <a-form :form="form" @submit="handleSubmit">
-          <a-form-item v-bind="formItemLayout" label="密码">
+          <a-form-item v-bind="formItemLayout" label="现密码">
             <a-input
               v-decorator="[
-          'password',
-          {
-            rules: [
-              {
-                required: true,
-                message: '请输入新密码!',
-              },
-              {
-                validator: validateToNextPassword,
-              },
-            ],
-          },
-        ]"
+                'now',
+                {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请确认你的旧密码!',
+                    },
+                    {
+                      validator: validateNow,
+                    },
+                  ],
+                },
+              ]"
+              type="password"
+              @blur="handleConfirmBlur"
+            />
+          </a-form-item>
+
+          <a-form-item v-bind="formItemLayout" label="新密码">
+            <a-input
+              v-decorator="[
+                'password',
+                {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请输入新密码!',
+                    },
+                    {
+                      validator: validateToNextPassword,
+                    },
+                  ],
+                },
+              ]"
               type="password"
             />
           </a-form-item>
           <a-form-item v-bind="formItemLayout" label="确认密码">
             <a-input
               v-decorator="[
-          'confirm',
-          {
-            rules: [
-              {
-                required: true,
-                message: '请确认你的密码!',
-              },
-              {
-                validator: compareToFirstPassword,
-              },
-            ],
-          },
-        ]"
+                'confirm',
+                {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请确认你的密码!',
+                    },
+                    {
+                      validator: compareToFirstPassword,
+                    },
+                  ],
+                },
+              ]"
               type="password"
               @blur="handleConfirmBlur"
             />
@@ -68,10 +75,17 @@
         </a-form>
       </a-col>
     </a-row>
+    <a-row>
+      <a-col style="width: 100%" type="flex" align="left">
+        <h2>账户</h2>
+        <a-button type="danger" ghost style="display: block; width: 100%" @click="logout">登出</a-button>
+      </a-col>
+    </a-row>
   </div>
 </template>
 
 <script>
+import { POST } from "../lib/fetch";
 export default {
   name: "UserInfo",
   data() {
@@ -104,15 +118,37 @@ export default {
   beforeCreate() {
     this.form = this.$form.createForm(this, { name: "register" });
   },
+  computed: {
+    user: function() {
+      return this.$root.user;
+    }
+  },
   methods: {
+    logout(e) {
+      POST("/user/logout").then(() => {
+        this.$root.user = {};
+        // this.$route.push("/")
+        this.$router.push("/");
+      });
+    },
     handleSubmit(e) {
       e.preventDefault();
       this.form.validateFieldsAndScroll((err, values) => {
         if (!err) {
-          console.log("Received values of form: ", values);
-          this.$message.success("更改密码成功", 2);
+          const { confirm, password, now } = values;
+          POST("/client/password/reset", {
+            next: password,
+            now
+          })
+            .then(res => {
+              if (res.success) this.$message.success("更改密码成功", 2);
+              else this.$message.warning(req.ret, 2);
+            })
+            .catch(e => {
+              this.$message.warning("更改密码失败", 2);
+            });
         } else {
-          this.$message.error("请检查填写的信息", 2);
+          console.log(err);
         }
       });
     },
@@ -134,10 +170,21 @@ export default {
         form.validateFields(["confirm"], { force: true });
       }
       callback();
+    },
+    validateNow(rule, value, callback) {
+      const form = this.form;
+      console.log(value);
+      callback();
     }
   }
 };
 </script>
 
 <style scoped>
+.userinfo {
+  width: 800px;
+  max-width: 100vw;
+  margin-left: auto;
+  margin-right: auto;
+}
 </style>

@@ -1,8 +1,16 @@
 <template>
   <a-list size="large" bordered :dataSource="exams">
     <a-list-item slot="renderItem" slot-scope="exam">
-      <router-link class="line" to="/paper">
-        <div>{{exam.name}}</div>
+      <router-link
+        class="line"
+        :disabled="exam.startAt > Date.now()"
+        :to="{
+        path: '/paper',
+        query: {
+        id: exam.id
+      }}"
+      >
+        <div>{{exam.startAt > Date.now() ? "[未开始]" : ""}}{{exam.name}}</div>
         <div>
           去作答
           <a-icon type="arrow-right" />

@@ -1,7 +1,7 @@
 <template>
   <div class="singleMulti">
-    <div class="title">{{title}}</div>
-    <a-list :dataSource="choices">
+    <h3>{{title}}</h3>
+    <a-list :dataSource="choicesList">
       <a-list-item slot="renderItem" slot-scope="item">
         <div :class="select.indexOf(item.tag) > -1 ? 'select' : ''">{{item.tag}}、{{item.content}}</div>
       </a-list-item>
@@ -18,13 +18,20 @@ export default {
   name: "SingleMulti",
   props: {
     title: String,
-    choices: Array,
+    choices: Object,
     right: Array,
     select: Array
   },
+  created() {
+    this.choicesList = Object.keys(this.choices).map(tag => ({
+      tag,
+      content: this.choices[tag]
+    }));
+  },
   data() {
     return {
-      value: ""
+      value: "",
+      choicesList: []
     };
   },
   components: {

@@ -1,11 +1,11 @@
 <template>
   <div style="width: 100%">
-    <a-tabs defaultActiveKey="1" tabPosition="top">
-      <a-tab-pane tab="随堂测验" key="1">
-        <ExamList :exams="inclass" />
-      </a-tab-pane>
+    <a-tabs defaultActiveKey="2" tabPosition="top">
       <a-tab-pane tab="考试" key="2">
         <ExamList :exams="exams" />
+      </a-tab-pane>
+      <a-tab-pane tab="随堂测验" key="1">
+        <ExamList :exams="inclass" />
       </a-tab-pane>
       <a-tab-pane tab="历史记录" key="3">
         <HistoryList :exams="history" />
@@ -44,23 +44,25 @@ export default {
     };
   },
   methods: {
-    callback(val) {
-      console.log(val);
+    callback() {
+      // console.log(val);
     },
 
     async init() {
+      if (!this.$route.query.id) {
+        this.$router.push("/");
+      }
       const { data } = await GET("/client/exams", {
-        id: "f46f6080-549d-11ea-b26b-a1c8bfea84be"
+        id: this.$route.query.id
       });
       const now = new Date().getTime();
       const { success: finished, failure: todo } = arrayDivider(
         data,
         element => {
-          console.log(element.endAt, element.endAt - now < 0, element.name);
-          return element.endAt - now < 0;
+          // console.log(element.endAt, element.endAt - now < 0, element.name);
+          return element.endAt - now < 0 || element.AnswerExam.status === "FIN";
         }
       );
-      console.log(finished.length, todo.length);
       const { success, failure } = arrayDivider(todo, element => element.usage);
       this.history = finished;
       this.inclass = failure;

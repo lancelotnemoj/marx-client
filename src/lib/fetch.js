@@ -16,16 +16,25 @@ export const POST = function(url, data = {}) {
     mode: "cors", // no-cors, cors, *same-origin
     redirect: "follow", // manual, *follow, error
     referrer: "no-referrer" // *client, no-referrer
-  }).then(function(response) {
-    if (!response.ok) {
-      notification.error({
-        message: `请求接口 ${url} 失败`,
-        description: `${response.status}: ${response.statusText}`,
-        duration: 2
-      });
-    }
-    return response.json();
-  });
+  })
+    .then(function(response) {
+      if (!response.ok) {
+        notification.error({
+          message: `请求接口 ${url} 失败`,
+          description: `${response.status}: ${response.statusText}`,
+          duration: 2
+        });
+      }
+
+      return response.json();
+    })
+    .then(res => {
+      if (res.success === false) {
+        console.log(res);
+        window.dispatchEvent(new Event("toHome"));
+      }
+      return res;
+    });
 };
 
 export const GET = function(url, data = {}) {
@@ -41,14 +50,25 @@ export const GET = function(url, data = {}) {
     mode: "cors", // no-cors, cors, *same-origin
     redirect: "follow", // manual, *follow, error
     referrer: "no-referrer" // *client, no-referrer
-  }).then(function(response) {
-    if (!response.ok) {
-      notification.error({
-        message: `请求接口 ${url} 失败`,
-        description: `${response.status}: ${response.statusText}`,
-        duration: 2
-      });
-    }
-    return response.json();
-  });
+  })
+    .then(function(response) {
+      if (!response.ok) {
+        notification.error({
+          message: `请求接口 ${url} 失败`,
+          description: `${response.status}: ${response.statusText}`,
+          duration: 2
+        });
+      }
+      return response.json();
+    })
+    .then(res => {
+      if (res.success === false) {
+        notification.error({
+          message: `请求接口 ${url} 失败`,
+          duration: 2
+        });
+      }
+
+      return res;
+    });
 };
