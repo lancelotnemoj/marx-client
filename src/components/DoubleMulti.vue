@@ -1,6 +1,6 @@
 <template>
   <div class="singleMulti">
-    <h3>{{title}}</h3>
+    <h3>{{index}}、{{title}}</h3>
     <a-checkbox-group v-model="value">
       <div v-for="(opt, index) in Object.keys(choices)" v-bind:key="index">
         <div>
@@ -19,6 +19,7 @@ import { Checkbox, message } from "ant-design-vue";
 export default {
   name: "DoubleMulti",
   props: {
+    index: Number,
     title: String,
     choices: Object,
     answer: {

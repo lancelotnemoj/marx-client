@@ -1,15 +1,30 @@
 <template>
   <div class="singleMulti">
-    <h3>{{title}}</h3>
+    <h3>{{index}}、{{title}}</h3>
 
-    <div class="line">
+    <a-radio-group @change="onChange" v-model="value" size="large">
+      <a-radio :value="true" class="radio">
+        <span class="content">
+          正确
+          <a-icon type="check" />
+        </span>
+      </a-radio>
+
+      <a-radio :value="false" class="radio">
+        <span class="content">
+          错误
+          <a-icon type="close" />
+        </span>
+      </a-radio>
+    </a-radio-group>
+    <!-- <div class="line">
       <a-switch :style="inline" @change="onChange" :checked="answer">
         <a-icon type="check" slot="checkedChildren" />
         <a-icon type="close" slot="unCheckedChildren" />
       </a-switch>
 
       <div>上述描述是：{{answer ? "正确" : "错误"}}的</div>
-    </div>
+    </div>-->
   </div>
 </template>
 
@@ -22,6 +37,7 @@ export default {
     // console.log(this.$props);
   },
   props: {
+    index: Number,
     answer: Boolean,
     title: String
     // value: {
@@ -31,7 +47,7 @@ export default {
   },
   data() {
     return {
-      // value: true,
+      value: undefined,
       inline: {
         display: "inline"
       }
@@ -43,8 +59,9 @@ export default {
   },
   methods: {
     onChange: function(v) {
+      // console.log(this.value);
       // this.value = v;
-      this.$emit("update", v);
+      this.$emit("update", this.value);
     }
   },
   model: {
@@ -67,13 +84,20 @@ export default {
   margin-bottom: 16px;
 }
 
-label {
+/* label {
   margin-top: 0px;
   margin-bottom: 0px;
   max-width: 100%;
   white-space: normal !important;
   font-size: 24px;
   margin-left: 8px;
+} */
+
+.content {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  max-width: 100%;
+  white-space: normal !important;
 }
 
 .line {

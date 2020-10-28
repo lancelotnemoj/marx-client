@@ -18,20 +18,7 @@ export default {
   name: "History",
   data() {
     return {
-      examList: [
-        {
-          title: "马原期中考试",
-          time: "Sun Nov 11 2018 08:00:00 GMT+0800 (中国标准时间)"
-        },
-        {
-          title: "现在时刻",
-          time: "Tue Oct 15 2019 19:08:43 GMT+0800 (中国标准时间)"
-        },
-        {
-          title: "马原期末考试",
-          time: "Mon Nov 11 2019 08:00:00 GMT+0800 (中国标准时间)"
-        }
-      ]
+      examList: []
     };
   }
 };

@@ -1,6 +1,6 @@
 <template>
   <div class="singleMulti">
-    <h3>{{title}}</h3>
+    <h3>{{index}}、{{title}}</h3>
     <a-radio-group @change="onChange" v-model="value" size="large">
       <div v-for="(opt, index) in Object.keys(choices)" v-bind:key="index">
         <a-radio :value="opt" class="radio">
@@ -18,6 +18,7 @@ export default {
   name: "SingleMulti",
   props: {
     title: String,
+    index: Number,
     choices: Object,
     answer: {
       type: String,

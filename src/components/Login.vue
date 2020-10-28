@@ -1,5 +1,24 @@
 <template>
-  <a-modal
+  <div class="login-pop" v-if="show === true">
+    <div class="login-container">
+      <div class="side side-img"></div>
+      <div class="side side-main">
+        <div class="side-form" style="text-align: center">
+          <img :src="require('../assets/logo.jpg')" class="side-logo" alt="浙江树人大学" />
+          <h1>思政课程网络考试系统</h1>
+        </div>
+
+        <div class="side-form">
+          <customized-form :password="fields.password" :id="fields.id" @change="handleFormChange" />
+        </div>
+
+        <div class="side-form">
+          <a-button style="width: 100%" @click="handleLogin">登录</a-button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <a-modal
     :visible="show"
     okText="登录"
     @ok="handleLogin"
@@ -9,12 +28,13 @@
   >
     <h1 style="text-align: center">用户登录</h1>
     <customized-form :password="fields.password" :id="fields.id" @change="handleFormChange" />
-  </a-modal>
+  </a-modal>-->
 </template>
 
 <script>
 import { POST } from "@/lib/fetch";
 import { notification } from "ant-design-vue";
+import logo from "../assets/logo.jpg";
 const CustomizedForm = {
   props: ["id", "password"],
 
@@ -131,3 +151,58 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.login-pop {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rosybrown;
+  background-image: url("../assets/background.jpg");
+  background-size: 100% 100%;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-container {
+  width: 75vw;
+  height: 75vh;
+  background-color: white;
+  box-shadow: 0px 5px 100px rgba(0, 0, 0, 0.3);
+  display: flex;
+}
+
+.side {
+  width: 50%;
+  height: 100%;
+}
+
+.side-img {
+  background-position: 0, 0;
+  background-image: url("../assets/side.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.side-main {
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: space-around;
+
+  padding: 50px 0px;
+}
+
+.side-form {
+  width: 250px;
+}
+
+.side-logo {
+  width: 80%;
+}
+</style>

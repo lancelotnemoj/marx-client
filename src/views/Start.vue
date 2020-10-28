@@ -34,7 +34,7 @@
               id: item.id
             }
           }"
-          src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+          :src="`${suffix}/${item.pic || 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'}`"
         />
       </a-col>
     </a-row>
@@ -48,6 +48,7 @@
 </template>
 
 <script>
+import config from "@/config.js";
 import MenuLink from "@/components/MenuLink.vue";
 import { GET } from "@/lib/fetch";
 export default {
@@ -57,10 +58,13 @@ export default {
   },
   data() {
     return {
-      courses: []
+      courses: [],
+      suffix: config.suffix
     };
   },
-  created() {},
+  created() {
+    console.log(config);
+  },
   methods: {
     init: function() {
       GET("/client/courses").then(res => {
@@ -75,9 +79,9 @@ export default {
   },
   watch: {
     user: {
-      handler: function(newValue, oldValue) {
+      handler: function(newValue) {
         if (newValue && Object.keys(newValue).length > 0) {
-          console.log("here");
+          // console.log("here");
           this.init();
         }
       },

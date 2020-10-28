@@ -7,8 +7,8 @@ export default new Router({
   routes: [
     {
       path: "/",
-      name: "首页",
-      component: () => import("./views/Start.vue")
+      name: "home",
+      component: () => import("./views/Start.vue"),
     },
     {
       path: "/exams",
@@ -17,7 +17,7 @@ export default new Router({
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () =>
-        import(/* webpackChunkName: "about" */ "./views/Exams.vue")
+        import(/* webpackChunkName: "about" */ "./views/Exams.vue"),
     },
     {
       path: "/info",
@@ -26,7 +26,7 @@ export default new Router({
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () =>
-        import(/* webpackChunkName: "about" */ "./views/UserInfo.vue")
+        import(/* webpackChunkName: "about" */ "./views/UserInfo.vue"),
     },
     {
       path: "/history",
@@ -35,7 +35,7 @@ export default new Router({
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () =>
-        import(/* webpackChunkName: "about" */ "./views/History.vue")
+        import(/* webpackChunkName: "about" */ "./views/History.vue"),
     },
     {
       path: "/paper",
@@ -44,7 +44,12 @@ export default new Router({
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () =>
-        import(/* webpackChunkName: "about" */ "./views/Paper.vue")
+        import(/* webpackChunkName: "about" */ "./views/Paper.vue"),
+    },
+    {
+      path: "/judge",
+      name: "judge",
+      component: () => import("./views/Judge.vue"),
     },
     {
       path: "/review",
@@ -53,7 +58,7 @@ export default new Router({
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () =>
-        import(/* webpackChunkName: "about" */ "./views/Review.vue")
-    }
-  ]
+        import(/* webpackChunkName: "about" */ "./views/Review.vue"),
+    },
+  ],
 });

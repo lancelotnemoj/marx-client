@@ -6,9 +6,9 @@
         afterChecked && (!$root.user || Object.keys($root.user).length === 0)
       "
       />
+      <Header />
 
       <div class="layout pc-layout">
-        <Header />
         <hr class="divider pc-divider" style="height: 1px; width: calc(100% - 40px)" />
 
         <a-layout-content style="padding: 0 24px;flex-grow:2" class="content">
@@ -45,7 +45,8 @@ export default {
   },
   async created() {
     const { success, data } = await POST("/user/info");
-    if (!success) {
+    console.log(data);
+    if (!success || data.privilege.indexOf("student") < 0) {
       notification.error({
         message: "未登录"
       });
@@ -87,12 +88,14 @@ p {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  min-height: 100vh !important;
 }
 .layout {
-  min-height: 100vh !important;
+  flex: 1;
   display: flex;
   flex-direction: column;
   text-align: left;
+  /* overflow-x: hidden; */
 }
 .pc-layout {
   max-width: 1200px; /* px */

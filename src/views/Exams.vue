@@ -56,13 +56,20 @@ export default {
         id: this.$route.query.id
       });
       const now = new Date().getTime();
+      // 已经结束的考试： finished
       const { success: finished, failure: todo } = arrayDivider(
         data,
         element => {
-          // console.log(element.endAt, element.endAt - now < 0, element.name);
-          return element.endAt - now < 0 || element.AnswerExam.status === "FIN";
+          // console.log(
+          //   element.endAt,
+          //   now,
+          //   element.endAt - now < 0,
+          //   element.name
+          // );
+          return element.endAt - now < 0 || element.status === "FIN";
         }
       );
+
       const { success, failure } = arrayDivider(todo, element => element.usage);
       this.history = finished;
       this.inclass = failure;
@@ -74,3 +81,4 @@ export default {
 
 <style scoped>
 </style>
+

@@ -2,7 +2,8 @@
   <router-link :to="to" class="link">
     <a-card hoverable style="width: 100%; border-radius: 16px; overflow: hidden">
       <div slot="cover" class="cover">
-        <img alt="cover" :src="src" />
+        <div :style="`background: url(${src})`" class="cover-img"></div>
+        <!-- <img alt="cover" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" /> -->
       </div>
       <a-card-meta :title="title"></a-card-meta>
     </a-card>
@@ -24,15 +25,21 @@ export default {
 <style scoped>
 .cover {
   width: 100%;
-  height: 0px;
-  padding-bottom: 33%;
+  /* height: 0px; */
+  /* height: 100px; */
+  padding-bottom: calc(100% * 16 / 9);
   position: relative;
   overflow: hidden;
   /* border-radius: 10pt; */
 }
-.cover img {
+.cover-img {
   position: absolute;
+  /* height: 160px; */
   width: 100%;
+  height: 100%;
+  background-size: cover !important;
+  background-position: center !important;
+  /* width: 100%; */
   /* border-radius: 10pt; */
 }
 

@@ -3,13 +3,19 @@
     <a-list-item slot="renderItem" slot-scope="exam">
       <router-link
         class="line"
-        :disabled="exam.usage === true && exam.endAt < Date.now()"
+        :disabled="exam.usage === true && (exam.endAt >= Date.now())"
         :to="{path: '/review',
           query: {
           id: exam.id
         }}"
       >
-        <div>{{(exam.usage === true && exam.endAt < Date.now()) ? "[未结束]" : ""}}{{exam.name}}</div>
+        <div>
+          {{
+          (exam.usage === true && (exam.endAt >= Date.now()))
+          ? "[未结束]"
+          : ""
+          }} {{exam.name}}
+        </div>
         <div>
           详情
           <a-icon type="arrow-right" />
@@ -25,6 +31,9 @@ export default {
   name: "ExamList",
   props: {
     exams: Array
+  },
+  mounted() {
+    // console.log(this.$props.exams);
   },
   methods: {
     handleClick(exam) {

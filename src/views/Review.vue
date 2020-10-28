@@ -1,7 +1,9 @@
 <template>
-  <div class="home">
+  <div class="home" style="position: relative">
+    <Grade :value="grade" />
+
     <a-row type="flex" justify="center" align="top">
-      <h1>{{exam.name}}</h1>
+      <h1 class="exam-title">{{exam.name}}</h1>
     </a-row>
     <a-row type="flex" justify="center" align="top">
       <a-col :xs="24" :sm="20" :md="16" :lg="12" :xl="12">
@@ -56,13 +58,15 @@
 import SingleReview from "@/components/SingleReview.vue";
 import DoubleReview from "@/components/DoubleReview.vue";
 import TFReview from "@/components/TFReview.vue";
+import Grade from "@/components/Grade.vue";
 import { GET } from "@/lib/fetch";
 export default {
   name: "Answer",
   components: {
     SingleReview,
     DoubleReview,
-    TFReview
+    TFReview,
+    Grade
   },
   data() {
     return {
@@ -78,7 +82,8 @@ export default {
       const { data } = await GET("/client/review", {
         exam: this.$route.query.id
       });
-      const { raw = {}, questions = [], exam = {} } = data;
+
+      const { raw = {}, questions = [], exam = {}, grade = -1 } = data;
       const paper = {};
       questions.forEach(elem => {
         paper[elem.id] = elem;
@@ -94,8 +99,15 @@ export default {
       });
       this.paper = raw;
       this.exam = exam;
+      this.grade = grade;
       // console.log(raw);
     }
   }
 };
 </script>
+
+<style scoped>
+.exam-title {
+  font-size: 32pt;
+}
+</style>
