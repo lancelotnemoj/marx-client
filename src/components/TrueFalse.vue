@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { Switch, Icon } from "ant-design-vue";
+import { Icon } from "ant-design-vue";
 
 export default {
   name: "TrueFalse",
@@ -54,11 +54,11 @@ export default {
     };
   },
   components: {
-    aSwitch: Switch,
+    // aSwitch: Switch,
     aIcon: Icon
   },
   methods: {
-    onChange: function(v) {
+    onChange: function() {
       // console.log(this.value);
       // this.value = v;
       this.$emit("update", this.value);

@@ -34,7 +34,7 @@
 <script>
 import { POST } from "@/lib/fetch";
 import { notification } from "ant-design-vue";
-import logo from "../assets/logo.jpg";
+// import logo from "../assets/logo.jpg";
 const CustomizedForm = {
   props: ["id", "password"],
 
@@ -116,7 +116,7 @@ export default {
         password: this.fields.password.value
       }).then(res => {
         if (res.success) {
-          console.log(res.data);
+          // console.log(res.data);
           let privilege = JSON.parse(res.data.privilege);
           if (privilege.indexOf("student") < 0) {
             notification.error({
