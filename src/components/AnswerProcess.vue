@@ -6,7 +6,7 @@
       <div v-if="item.progress === item.progress">
         <span>{{item.name}}</span>
         <a-progress
-          :percent="item.progress"
+          :percent="Number(item.progress.toFixed(2))"
           size="small"
           :status="item.progress === 100 
             ? 'success'
@@ -52,7 +52,7 @@ export default {
   width: 300px;
   margin-bottom: -300px;
   background: rgba(255, 255, 255);
-  z-index: 9999;
+  z-index: 999;
   height: 300px;
 }
 /* @media (min-width: 1200px) {

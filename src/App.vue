@@ -16,7 +16,7 @@
           <router-view />
         </a-layout-content>
 
-        <a-layout-footer style="text-align: center">Marx ©2019 Created by Zato</a-layout-footer>
+        <a-layout-footer style="text-align: center">Marx ©2020 Created by Mikawa</a-layout-footer>
       </div>
     </a-layout>
   </a-locale-provider>

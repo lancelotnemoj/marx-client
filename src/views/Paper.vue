@@ -9,7 +9,7 @@
     <AnswerProcess :status="status" :remainTime="remain" />
 
     <a-row type="flex" justify="center" align="top">
-      <h1 class="exam-title">{{exam.name || "树人大学考试系统"}}</h1>
+      <h1 class="exam-title">{{ exam.name || "树人大学考试系统" }}</h1>
     </a-row>
 
     <a-row type="flex" justify="center" align="top">
@@ -41,13 +41,19 @@
           <h2 v-if="trueFalse.length > 0" class="type-title">判断题</h2>
           <a-divider />
           <div v-for="(item, index) in trueFalse" :key="item.id">
-            <TrueFalse :index="index + 1" :title="item.title" v-model="paper.trueFalse[item.id]" />
+            <TrueFalse
+              :index="index + 1"
+              :title="item.title"
+              v-model="paper.trueFalse[item.id]"
+            />
           </div>
         </div>
       </a-col>
     </a-row>
     <a-row class="finishup">
-      <a-button type="primary" class="finishup_btn" @click="finishup">提交</a-button>
+      <a-button type="primary" class="finishup_btn" @click="finishup"
+        >提交</a-button
+      >
     </a-row>
   </div>
 </template>
@@ -59,6 +65,7 @@ import DoubleMulti from "@/components/DoubleMulti.vue";
 import TrueFalse from "@/components/TrueFalse.vue";
 import AnswerProcess from "@/components/AnswerProcess.vue";
 import { GET, POST } from "@/lib/fetch";
+import { Modal } from "ant-design-vue";
 
 export default {
   name: "Answer",
@@ -66,17 +73,17 @@ export default {
     SingleMulti,
     DoubleMulti,
     TrueFalse,
-    AnswerProcess
+    AnswerProcess,
   },
   computed: {
-    status: function() {
+    status: function () {
       // console.log("here", Object.values(this.paper.multi), this.paper.multi);
       return [
         {
           name: "单项选择题",
           progress:
             (Object.keys(this.paper.single || {}).length / this.single.length) *
-            100
+            100,
         },
         {
           name: "双项选择题",
@@ -87,22 +94,25 @@ export default {
               0
             ) /
               this.multi.length) *
-            100
+            100,
         },
         {
           name: "判断题",
           progress:
             (Object.keys(this.paper.trueFalse || {}).length /
               this.trueFalse.length) *
-            100
-        }
+            100,
+        },
       ];
     },
-    remain: function() {
-      return (
-        this.exam.endAt - this.exam.startAt - this.sum - (this.now - this.start)
+    remain: function () {
+      return Math.max(
+        this.exam.endAt -
+          Math.max(this.exam.startAt, this.now - (this.sum || 0)),
+        0
       );
-    }
+      // Math.max(this.exam.endAt - this.exam.startAt - this.sum - (this.now - (this.start || 0)), 0)
+    },
   },
   data() {
     return {
@@ -113,76 +123,115 @@ export default {
       paper: {
         single: {},
         multi: {},
-        trueFalse: {}
+        trueFalse: {},
       },
       loading: true,
       backuping: false,
       exam: {},
       unSaveSteps: 0,
-      now: Date.now()
+      now: Date.now(),
     };
   },
   watch: {
     paper: {
-      handler: function() {
+      handler: function () {
         this.unSaveSteps += 1;
         if (this.unSaveSteps === 5) {
-          this.backup();
+          console.log("backup", this.paper);
+          this.doBackup();
           this.unSaveSteps = 0;
         }
       },
-      deep: true
-    }
+      deep: true,
+    },
+    remain: {
+      handler: function () {
+        if (this.remain <= 0) {
+          const modal = Modal.info();
+          this.loading = false;
+          modal.update({
+            title: "考试结束",
+            content: `请点击确认按钮，交卷后有序离场`,
+            onOk: () => {
+              modal.destroy();
+              this.finishup()
+            },
+          });
+          return;
+        }
+      },
+    },
   },
   methods: {
-    backup: function() {
+    doBackup: function () {
       if (this.backuping === false) {
         this.backuping = true;
+        console.log(JSON.parse(JSON.stringify(this.paper)));
         return POST("/client/backup", {
-          data: this.paper,
-          exam: this.exam.id
+          data: JSON.parse(JSON.stringify(this.paper)),
+          exam: this.exam.id,
         }).then(() => {
-          this.backuping === false;
+          this.backuping = false;
         });
       } else {
         return Promise.resolve();
       }
     },
-    finishup: function() {
+    finishup: function () {
       this.$router.replace({
         name: "judge",
         params: {
           paper: JSON.parse(JSON.stringify(this.paper)),
-          exam: this.exam
-        }
+          exam: this.exam,
+        },
       });
-    }
+    },
   },
   created() {
     // console.log(this.$route.query);
     // 打散逻辑
     setTimeout(() => {
       GET("/client/paper", {
-        id: this.$route.query.id
-      }).then(res => {
-        // console.log(res.current);
-        this.single = res.paper.single || [];
-        this.multi = res.paper.multi || [];
-        this.trueFalse = res.paper.trueFalse || [];
-        let tempValue =
-          res.current !== undefined && typeof res.current === "string"
-            ? JSON.parse(res.current)
-            : {
-                single: {},
-                multi: {},
-                trueFalse: {}
-              };
-        this.paper = tempValue;
-        this.exam = res.exam;
-        this.sum = res.sum;
-        this.now = Date.now();
-        this.start = Date.now();
-        this.loading = false;
+        id: this.$route.query.id,
+      }).then((res) => {
+        if (res.exam) {
+          // if (Date.now() > res.exam.endAt) {
+          //   const modal = Modal.info();
+          //   this.loading = false;
+          //   modal.update({
+          //     title: "无法作答",
+          //     content: `考试已经于${new Date(
+          //       res.exam.endAt
+          //     ).toLocaleString()}结束`,
+          //     onOk: () => {
+          //       modal.destroy();
+          //       this.$router.replace({
+          //         name: "home",
+          //       });
+          //     },
+          //   });
+          //   return;
+          // }
+
+          // console.log(res.current);
+          this.single = res.paper.single || [];
+          this.multi = res.paper.multi || [];
+          this.trueFalse = res.paper.trueFalse || [];
+          let tempValue =
+            res.current !== undefined && typeof res.current === "string"
+              ? JSON.parse(res.current)
+              : {
+                  single: {},
+                  multi: {},
+                  trueFalse: {},
+                };
+          this.paper = tempValue;
+          this.exam = res.exam;
+          this.sum = res.sum;
+          this.now = Date.now();
+          this.start = Date.now();
+          this.loading = false;
+        }
       });
     });
   },
@@ -192,13 +241,13 @@ export default {
       that.now = Date.now();
     }, 1000);
 
-    window.onbeforeunload = async function() {
+    window.onbeforeunload = async function () {
       await that.backup();
     };
   },
   destroyed() {
     window.onbeforeunload = null;
-  }
+  },
 };
 </script>
 

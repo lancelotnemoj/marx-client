@@ -10,7 +10,7 @@
         <h1 class="title" style="color: white;padding: 0; margin: 0px 12px;font-size: 24px">思政课考试系统</h1>
       </router-link>
 
-      <router-link to="/info" style="display: flex; justify-content: center;">
+      <router-link to="/info" style="display: flex; justify-content: center;flex: 1">
         <a-avatar
           size="large"
           @click="goUserInfo"
@@ -87,6 +87,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin: auto;
+  flex-wrap: wrap;
 }
 /* 
 .header-wrap {

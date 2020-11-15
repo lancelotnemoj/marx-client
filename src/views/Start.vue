@@ -31,18 +31,25 @@
           :to="{
             path: '/exams',
             query: {
-              id: item.id
-            }
+              id: item.id,
+            },
           }"
-          :src="`${suffix}/${item.pic || 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'}`"
+          :src="`${
+            item.pic
+              ? `${suffix}/${item.pic}`
+              : require('../assets/book.jpg')
+          }`"
         />
       </a-col>
     </a-row>
     <a-empty
       v-else
-      style="flex: 2;align-items: center;
-    justify-content: center;
-    display: flex;"
+      style="
+        flex: 2;
+        align-items: center;
+        justify-content: center;
+        display: flex;
+      "
     />
   </div>
 </template>
@@ -54,40 +61,40 @@ import { GET } from "@/lib/fetch";
 export default {
   name: "home",
   components: {
-    MenuLink
+    MenuLink,
   },
   data() {
     return {
       courses: [],
-      suffix: config.suffix
+      suffix: config.suffix,
     };
   },
   created() {
     console.log(config);
   },
   methods: {
-    init: function() {
-      GET("/client/courses").then(res => {
+    init: function () {
+      GET("/client/courses").then((res) => {
         this.courses = res.data;
       });
-    }
+    },
   },
   computed: {
-    user: function() {
+    user: function () {
       return this.$root.user;
-    }
+    },
   },
   watch: {
     user: {
-      handler: function(newValue) {
+      handler: function (newValue) {
         if (newValue && Object.keys(newValue).length > 0) {
           // console.log("here");
           this.init();
         }
       },
-      immediate: true
-    }
-  }
+      immediate: true,
+    },
+  },
 };
 </script>
 
