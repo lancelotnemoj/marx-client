@@ -3,19 +3,22 @@
     <a-list-item slot="renderItem" slot-scope="exam">
       <router-link
         class="line"
-        :disabled="exam.usage === true && (exam.endAt >= Date.now())"
-        :to="{path: '/review',
+        :disabled="exam.usage === true && exam.endAt >= Date.now()"
+        :to="{
+          path: '/review',
           query: {
-          id: exam.id
-        }}"
+            id: exam.id,
+          },
+        }"
       >
         <div>
           {{
-          (exam.usage === true && (exam.endAt >= Date.now()))
-          ? "[未结束]"
-          : ""
-          }} {{exam.name}}
+            exam.usage === true && exam.endAt >= Date.now() ? "[未结束]" : ""
+          }}
+          {{ exam.name }}
+          <div>得分：{{ exam.AnswerExam.grade }}</div>
         </div>
+
         <div>
           详情
           <a-icon type="arrow-right" />
@@ -30,7 +33,7 @@ import { notification } from "ant-design-vue";
 export default {
   name: "ExamList",
   props: {
-    exams: Array
+    exams: Array,
   },
   mounted() {
     // console.log(this.$props.exams);
@@ -41,11 +44,11 @@ export default {
       // console.log(new Date(exam.endAt));
       if ((exam.endAt || Date.now()) < Date.now()) {
         notification.warn({
-          message: "考试尚未结束，再逛逛吧"
+          message: "考试尚未结束，再逛逛吧",
         });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -54,5 +57,6 @@ export default {
   display: flex;
   flex-grow: 2;
   justify-content: space-between;
+  align-items: center;
 }
 </style>

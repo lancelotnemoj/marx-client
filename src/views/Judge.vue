@@ -1,6 +1,13 @@
 <template>
   <div
-    style="flex: 1; height: 100%; display: flex; justify-content: center; align-items: center;flex-direction: column"
+    style="
+      flex: 1;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    "
   >
     <a-result :title="current < 2 ? '正在处理中' : `你的成绩：${grade}`">
       <template #icon>
@@ -12,7 +19,10 @@
       </template>
     </a-result>
     <a-steps :current="current">
-      <a-step title="答卷上交" description="原始答卷已经保存在本地，请勿关闭浏览器" />
+      <a-step
+        title="答卷上交"
+        description="原始答卷已经保存在本地，请勿关闭浏览器"
+      />
       <a-step title="系统判卷" description="判卷会花费一些时间，请耐心等待" />
       <a-step title="获取成绩" description="如有异常，请立即与监考老师联系" />
     </a-steps>
@@ -31,7 +41,7 @@ export default {
   data() {
     return {
       current: 0,
-      grade: -1
+      grade: -1,
     };
   },
   async mounted() {
@@ -46,25 +56,29 @@ export default {
     }
 
     const list = ["multi", "trueFalse", "single"]
-      .map(type => {
-        return Object.keys(this.$route.params.paper[type] || {});
+      .map((type) => {
+        try {
+          return Object.keys(this.$route.params.paper[type] || {});
+        } catch (error) {
+          return {};
+        }
       })
       .reduce((prev, item) => [...prev, ...item], []);
 
     const res = await POST("/client/finishup", {
       data: this.$route.params.paper,
       exam: this.$route.params.exam.id,
-      list
+      list,
     });
     if (res.success) {
       notification.success({
         message: "交卷成功",
-        duration: 2
+        duration: 2,
       });
       that.current = 1;
     } else {
       notification.error({
-        message: "系统繁忙,请稍后"
+        message: "系统繁忙,请稍后",
       });
     }
 
@@ -73,34 +87,40 @@ export default {
         ...prev,
         [curr.id]: Array.from(JSON.parse(curr.right)).sort((a, b) =>
           a.localeCompare(b)
-        )
+        ),
       }),
       {}
     );
 
-    const judgeResult = ["multi", "trueFalse", "single"].map(type => {
+    const judgeResult = ["multi", "trueFalse", "single"].map((type) => {
       const typePaper = this.$route.params.paper[type];
-      return Object.keys(typePaper).map(quezKey => {
-        let answer = typePaper[quezKey];
-        let right = rightAnswer[quezKey];
-        if (right.length === 2) {
-          answer = answer
-            .map(item => item.toUpperCase())
-            .sort((a, b) => a.charCodeAt() - b.charCodeAt());
-          right = right
-            .map(item => item.toUpperCase())
-            .sort((a, b) => a.charCodeAt() - b.charCodeAt());
-
-          return (
-            String(right[0]).toUpperCase() ===
-              String(answer[0]).toUpperCase() &&
-            String(right[1] === answer[1]).toUpperCase()
+      return Object.keys(typePaper).map((quezKey) => {
+        try {
+          let answer = typePaper[quezKey].filter((item) => item && item !== "");
+          let right = rightAnswer[quezKey].filter(
+            (item) => item && item !== ""
           );
-        } else {
-          answer = String(answer).toUpperCase();
-          right = String(right[0]).toUpperCase();
+          if (right.length === 2) {
+            answer = answer
+              .map((item) => item.toUpperCase())
+              .sort((a, b) => a.charCodeAt() - b.charCodeAt());
+            right = right
+              .map((item) => item.toUpperCase())
+              .sort((a, b) => a.charCodeAt() - b.charCodeAt());
 
-          return right === answer;
+            return (
+              String(right[0]).toUpperCase() ===
+                String(answer[0]).toUpperCase() &&
+              String(right[1] === answer[1]).toUpperCase()
+            );
+          } else {
+            answer = String(answer).toUpperCase();
+            right = String(right[0]).toUpperCase();
+
+            return right === answer;
+          }
+        } catch (error) {
+          return true;
         }
       });
     });
@@ -119,7 +139,7 @@ export default {
     await POST("/client/report", {
       exam: this.$route.params.exam.id,
       grade,
-      raw: this.$route.params.paper
+      raw: this.$route.params.paper,
     });
 
     this.current += 1;
@@ -136,9 +156,9 @@ export default {
     },
     home() {
       this.$router.replace({
-        name: "home"
+        name: "home",
       });
-    }
-  }
+    },
+  },
 };
 </script>

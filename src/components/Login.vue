@@ -115,7 +115,7 @@ export default {
         uuid: this.fields.id.value,
         password: this.fields.password.value
       }).then(res => {
-        if (res.success) {
+        if (res.success === true) {
           // console.log(res.data);
           let privilege = JSON.parse(res.data.privilege);
           if (privilege.indexOf("student") < 0) {
@@ -162,7 +162,7 @@ export default {
   background-color: rosybrown;
   background-image: url("../assets/background.jpg");
   background-size: 100% 100%;
-  z-index: 9999;
+  z-index: 999;
   display: flex;
   justify-content: center;
   align-items: center;
