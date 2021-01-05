@@ -3,14 +3,14 @@
     <a-list-item slot="renderItem" slot-scope="exam">
       <router-link
         class="line"
-        :disabled="exam.startAt > Date.now()"
+        :disabled="exam.startAt > now"
         :to="{
         path: '/paper',
         query: {
         id: exam.id
       }}"
       >
-        <div>{{exam.startAt > Date.now() ? "[未开始]" : ""}}{{exam.name}}</div>
+        <div>{{exam.startAt > now ? "[未开始]" : ""}}{{exam.name}}</div>
         <div>
           去作答
           <a-icon type="arrow-right" />
@@ -24,7 +24,10 @@
 export default {
   name: "ExamList",
   props: {
-    exams: Array
+    exams: Array,
+    now: {
+      type: Number
+    }
   }
 };
 </script>

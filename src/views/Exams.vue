@@ -2,13 +2,13 @@
   <div style="width: 100%">
     <a-tabs defaultActiveKey="2" tabPosition="top">
       <a-tab-pane tab="考试" key="2">
-        <ExamList :exams="exams" />
+        <ExamList :exams="exams" :now="currTime" />
       </a-tab-pane>
       <a-tab-pane tab="随堂测验" key="1">
-        <ExamList :exams="inclass" />
+        <ExamList :exams="inclass" :now="currTime" />
       </a-tab-pane>
       <a-tab-pane tab="历史记录" key="3">
-        <HistoryList :exams="history" />
+        <HistoryList :exams="history" :now="currTime" />
       </a-tab-pane>
     </a-tabs>
   </div>
@@ -21,7 +21,7 @@ import { GET } from "@/lib/fetch";
 export default {
   components: {
     ExamList,
-    HistoryList
+    HistoryList,
   },
   created() {
     this.init();
@@ -30,17 +30,18 @@ export default {
     // }
   },
   computed: {
-    isPC: function() {
+    isPC: function () {
       const mql = window.matchMedia("(max-width: 768px)");
       return mql.matches || false;
-    }
+    },
   },
   data() {
     return {
       inclass: [],
       exams: [],
       history: [],
-      tabPosition: "left"
+      tabPosition: "left",
+      currTime: -1,
     };
   },
   methods: {
@@ -49,17 +50,22 @@ export default {
     },
 
     async init() {
+      console.log("init");
       if (!this.$route.query.id) {
         this.$router.push("/");
       }
-      const { data } = await GET("/client/exams", {
-        id: this.$route.query.id
-      });
-      const now = new Date().getTime();
+      const [{ data }, { data: curr }] = await Promise.all([
+        GET("/client/exams", {
+          id: this.$route.query.id,
+        }),
+        GET("/client/time"),
+      ]);
+
+      const now = curr || Date.now();
       // 已经结束的考试： finished
       const { success: finished, failure: todo } = arrayDivider(
         data,
-        element => {
+        (element) => {
           // console.log(
           //   element.endAt,
           //   now,
@@ -70,12 +76,16 @@ export default {
         }
       );
 
-      const { success, failure } = arrayDivider(todo, element => element.usage);
+      const { success, failure } = arrayDivider(
+        todo,
+        (element) => element.usage
+      );
       this.history = finished;
       this.inclass = failure;
       this.exams = success;
-    }
-  }
+      this.currTime = now;
+    },
+  },
 };
 </script>
 
