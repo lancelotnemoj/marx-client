@@ -108,7 +108,7 @@ export default {
     remain: function () {
       return Math.max(
         this.exam.endAt -
-          Math.max(this.exam.startAt, this.now - (this.sum || 0)),
+          Math.max(this.exam.startAt, this.startAt + this.now - (this.sum || 0)),
         0
       );
       // Math.max(this.exam.endAt - this.exam.startAt - this.sum - (this.now - (this.start || 0)), 0)
@@ -129,7 +129,8 @@ export default {
       backuping: false,
       exam: {},
       unSaveSteps: 0,
-      now: Date.now(),
+      now: 0,
+      startAt: Date.now()
     };
   },
   watch: {
@@ -154,7 +155,7 @@ export default {
             content: `请点击确认按钮，交卷后有序离场`,
             onOk: () => {
               modal.destroy();
-              this.finishup()
+              this.finishup();
             },
           });
           return;
@@ -190,55 +191,74 @@ export default {
   created() {
     // console.log(this.$route.query);
     // 打散逻辑
-    setTimeout(() => {
-      GET("/client/paper", {
-        id: this.$route.query.id,
-      }).then((res) => {
-        if (res.exam) {
-          // if (Date.now() > res.exam.endAt) {
-          //   const modal = Modal.info();
-          //   this.loading = false;
-          //   modal.update({
-          //     title: "无法作答",
-          //     content: `考试已经于${new Date(
-          //       res.exam.endAt
-          //     ).toLocaleString()}结束`,
-          //     onOk: () => {
-          //       modal.destroy();
-          //       this.$router.replace({
-          //         name: "home",
-          //       });
-          //     },
-          //   });
-          //   return;
-          // }
+    setTimeout(async () => {
+      const [res, { data: serverTime = Date.now() }] = await Promise.all([
+        GET("/client/paper", {
+          id: this.$route.query.id,
+        }),
+        GET("/client/time"),
+      ]);
 
-          // console.log(res.current);
-          this.single = res.paper.single || [];
-          this.multi = res.paper.multi || [];
-          this.trueFalse = res.paper.trueFalse || [];
-          let tempValue =
-            res.current !== undefined && typeof res.current === "string"
-              ? JSON.parse(res.current)
-              : {
-                  single: {},
-                  multi: {},
-                  trueFalse: {},
-                };
-          this.paper = tempValue;
-          this.exam = res.exam;
-          this.sum = res.sum;
-          this.now = Date.now();
-          this.start = Date.now();
+      if (res.exam) {
+        if (serverTime > res.exam.endAt) {
+          const modal = Modal.info();
           this.loading = false;
+          modal.update({
+            title: "无法作答",
+            content: `考试已经于${new Date(
+              res.exam.endAt
+            ).toLocaleString()}结束`,
+            onOk: () => {
+              modal.destroy();
+              this.$router.replace({
+                name: "home",
+              });
+            },
+          });
+          return;
+        } else if(serverTime < res.exam.startAt) {
+          const modal = Modal.info();
+          this.loading = false;
+          modal.update({
+            title: "无法作答",
+            content: `考试将于${new Date(
+              res.exam.startAt
+            ).toLocaleString()}开始`,
+            onOk: () => {
+              modal.destroy();
+              this.$router.replace({
+                name: "home",
+              });
+            },
+          });
+          return 
         }
-      });
+
+        // console.log(res.current);
+        this.single = res.paper.single || [];
+        this.multi = res.paper.multi || [];
+        this.trueFalse = res.paper.trueFalse || [];
+        let tempValue =
+          res.current !== undefined && typeof res.current === "string"
+            ? JSON.parse(res.current)
+            : {
+                single: {},
+                multi: {},
+                trueFalse: {},
+              };
+        this.paper = tempValue;
+        this.exam = res.exam;
+        this.sum = res.sum;
+        this.now = 0;
+        this.start = serverTime;
+        this.loading = false;
+      }
     });
   },
   mounted() {
     const that = this;
     setInterval(() => {
-      that.now = Date.now();
+      that.now = that.now + 1000;
     }, 1000);
 
     window.onbeforeunload = async function () {

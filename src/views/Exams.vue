@@ -50,7 +50,7 @@ export default {
     },
 
     async init() {
-      console.log("init");
+      // console.log("init");
       if (!this.$route.query.id) {
         this.$router.push("/");
       }

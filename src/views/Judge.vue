@@ -64,6 +64,7 @@ export default {
         }
       })
       .reduce((prev, item) => [...prev, ...item], []);
+    console.log("list", list);
 
     const res = await POST("/client/finishup", {
       data: this.$route.params.paper,
@@ -91,12 +92,13 @@ export default {
       }),
       {}
     );
-
+    console.log('rightMap', rightAnswer);
     const judgeResult = ["multi", "trueFalse", "single"].map((type) => {
       const typePaper = this.$route.params.paper[type];
       return Object.keys(typePaper).map((quezKey) => {
         try {
-          let answer = typePaper[quezKey].filter((item) => item && item !== "");
+          let answer = typePaper[quezKey]
+
           let right = rightAnswer[quezKey].filter(
             (item) => item && item !== ""
           );
@@ -111,7 +113,7 @@ export default {
             return (
               String(right[0]).toUpperCase() ===
                 String(answer[0]).toUpperCase() &&
-              String(right[1] === answer[1]).toUpperCase()
+              String(right[1]).toUpperCase() === String(answer[1]).toUpperCase()
             );
           } else {
             answer = String(answer).toUpperCase();
@@ -120,6 +122,7 @@ export default {
             return right === answer;
           }
         } catch (error) {
+          console.log('judge error', error)
           return true;
         }
       });
