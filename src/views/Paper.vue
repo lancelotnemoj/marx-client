@@ -108,7 +108,7 @@ export default {
     remain: function () {
       return Math.max(
         this.exam.endAt -
-          Math.max(this.exam.startAt, this.startAt + this.now - (this.sum || 0)),
+          Math.max(this.exam.startAt, this.now - (this.sum || 0)),
         0
       );
       // Math.max(this.exam.endAt - this.exam.startAt - this.sum - (this.now - (this.start || 0)), 0)
@@ -249,7 +249,7 @@ export default {
         this.paper = tempValue;
         this.exam = res.exam;
         this.sum = res.sum;
-        this.now = 0;
+        this.now = serverTime;
         this.start = serverTime;
         this.loading = false;
       }
@@ -258,7 +258,7 @@ export default {
   mounted() {
     const that = this;
     setInterval(() => {
-      that.now = that.now + 1000;
+      that.now = (that.now || Date.now()) + 1000;
     }, 1000);
 
     window.onbeforeunload = async function () {
