@@ -19,10 +19,10 @@
           <div>得分：{{ exam.AnswerExam.grade }}</div>
         </div>
 
-        <div>
+        <!-- <div>
           详情
           <a-icon type="arrow-right" />
-        </div>
+        </div> -->
       </router-link>
     </a-list-item>
   </a-list>

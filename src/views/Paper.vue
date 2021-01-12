@@ -310,13 +310,13 @@ export default {
   left: 0;
   right: 0;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   z-index: 99;
 }
 
 .finishup_btn {
   width: 100%;
-  max-width: 1200px;
-  margin: auto;
+  max-width: 100px;
+  margin-right: 0;
 }
 </style>
